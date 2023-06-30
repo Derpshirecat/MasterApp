@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:core';
 
 void main() {
   runApp(const MyApp());
@@ -39,11 +40,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  int _currentWeekday= DateTime.now().weekday - 1;
 
   void _incrementCounter() {
     setState(() {
-      _counter++;
+      _currentWeekday++;
     });
   }
 
@@ -60,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 20),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -69,9 +70,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 'Welcome Anna Wagner, MSc!',
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
+               Container(
+                 margin: const EdgeInsets.only(top:30, bottom: 30),
+                 height: 250,
+                 child: Image.asset('images/weekday_$_currentWeekday.png')
+                 ),
                const Text('You have pushed the button this many times:'),
               Text(
-                '$_counter',
+                '$_currentWeekday',
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
             ],
