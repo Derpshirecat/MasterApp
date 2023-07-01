@@ -16,14 +16,25 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: const Color(0x00ffbf00)),
           textTheme: const TextTheme(
-            bodyLarge:  TextStyle(
-              fontSize: 18,
-              fontWeight:  FontWeight.w600,
-            ),
-            bodyMedium: TextStyle(
-              fontSize: 16
-            )
+              bodyLarge: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
+              bodyMedium: TextStyle(fontSize: 16)
+          ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.resolveWith(
+                (Set<MaterialState> states) {
+                  if (states.contains(MaterialState.disabled)) {
+                    return const Color(0x50ffbf00);
+                    }
+                    return const Color(0xFFffbf00);}),
+            foregroundColor: MaterialStateProperty.all<Color>(const Color(0xFF0E2239)),
+            fixedSize: MaterialStateProperty.all<Size>(const Size(double.infinity, 48)), // Width as 100% and fixed height of 48
+            maximumSize: MaterialStateProperty.all<Size>(const Size(500, 48)), // Max width of 500
           )
+        )
       ),
       home: const MyHomePage(title: 'MasterApp: Joke of the Day'),
     );
@@ -40,11 +51,20 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _currentWeekday= DateTime.now().weekday - 1;
+  int _currentWeekday = DateTime.now().weekday - 1;
+  bool punVisible = false;
+  bool favButtonDisabled = true;
 
-  void _incrementCounter() {
+  void _showPun() {
     setState(() {
-      _currentWeekday++;
+      punVisible = true;
+      favButtonDisabled = false;
+    });
+  }
+
+  void _addFavButton() {
+    setState(() {
+      favButtonDisabled = true;
     });
   }
 
@@ -61,33 +81,35 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 20),
+        padding: const EdgeInsets.fromLTRB(20, 40, 20, 10),
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-               Text(
-                'Welcome Anna Wagner, MSc!',
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-               Container(
-                 margin: const EdgeInsets.only(top:30, bottom: 30),
-                 height: 250,
-                 child: Image.asset('images/weekday_$_currentWeekday.png')
-                 ),
-               const Text('You have pushed the button this many times:'),
-              Text(
-                '$_currentWeekday',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-            ],
+          heightFactor: 1,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  'Welcome Anna Wagner, MSc!',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                Container(
+                    margin: const EdgeInsets.only(top: 30, bottom: 40),
+                    height: 250,
+                    child: Image.asset('images/weekday_$_currentWeekday.png')),
+                const Text(
+                    'What is the difference between a sable tooth tiger and a mammoth?'),
+                Container(
+                    margin: const EdgeInsets.only(top: 30, bottom: 50),
+                    child: punVisible
+                        ? const Text('The body fat percentage!')
+                        : ElevatedButton(onPressed: _showPun, child: const Text('Show Pun'))
+                ),
+                if (punVisible) ElevatedButton(onPressed: !favButtonDisabled ? _addFavButton : null, child: const Text('Add to favorites')
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
