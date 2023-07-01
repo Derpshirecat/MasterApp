@@ -81,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 20),
+        padding: const EdgeInsets.fromLTRB(20, 40, 20, 10),
         child: Center(
           heightFactor: 1,
           child: SingleChildScrollView(
