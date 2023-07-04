@@ -1,0 +1,18 @@
+# Get joke of the day querry
+SELECT j.idjoke,question,pun
+FROM Jokes AS j LEFT JOIN Records AS r ON j.idjoke = r.idjoke
+WHERE dateString = $date
+
+
+# Get all valid jokes
+SELECT j.idjoke,question,pun
+FROM Jokes AS j LEFT JOIN Records AS r ON j.idjoke = r.idjoke
+WHERE dateString IS NULL;
+
+
+# Create Joke
+INSERT INTO Records VALUES($date, $idjoke)
+
+
+# Update Joke to favorite
+UPDATE Jokes SET favorite = 1 WHERE idjoke = $idjoke

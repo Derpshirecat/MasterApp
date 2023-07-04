@@ -1,8 +1,49 @@
 import 'package:flutter/material.dart';
 import 'dart:core';
+import 'dart:math';
 
 void main() {
   runApp(const MyApp());
+}
+
+class Joke {
+  int idjoke = 0;
+  String question = '';
+  String pun = '';
+
+  Joke(this.idjoke, this.question, this.pun);
+
+  Joke.fromMap(Map<String, dynamic> map) {
+    idjoke = map['idjoke'];
+    question = map['question'];
+    pun = map['pun'];
+  }
+}
+
+class SQLDB {
+  String filepath = '';
+
+  static Joke getDailyJoke(filepath) {
+    List<Map<String, dynamic>> validJokes = [
+      {
+        'idjoke': 0,
+        'question': 'What is the difference between a sable tooth tiger and a mammoth?',
+        'pun': 'the body fat percentage!'
+      },
+      {
+        'idjoke': 1,
+        'question': 'Why is the sloth sleeping?',
+        'pun': 'because its a regenerating'
+      },
+      {
+        'idjoke': 2,
+        'question': 'Why is the field red?',
+        'pun': 'Because it is Vulcanic'
+      }
+    ];
+    int randIndex = Random().nextInt(validJokes.length);
+    return Joke.fromMap(validJokes[randIndex]);
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -51,9 +92,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _currentWeekday = DateTime.now().weekday - 1;
+  final int _currentWeekday = DateTime.now().weekday - 1;
   bool punVisible = false;
   bool favButtonDisabled = true;
+  Joke dailyJoke = SQLDB.getDailyJoke('');
 
   void _showPun() {
     setState(() {
@@ -96,12 +138,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     margin: const EdgeInsets.only(top: 30, bottom: 40),
                     height: 250,
                     child: Image.asset('images/weekday_$_currentWeekday.png')),
-                const Text(
-                    'What is the difference between a sable tooth tiger and a mammoth?'),
+                Text(dailyJoke.question),
                 Container(
                     margin: const EdgeInsets.only(top: 30, bottom: 50),
                     child: punVisible
-                        ? const Text('The body fat percentage!')
+                        ? Text(dailyJoke.pun)
                         : ElevatedButton(onPressed: _showPun, child: const Text('Show Pun'))
                 ),
                 if (punVisible) ElevatedButton(onPressed: !favButtonDisabled ? _addFavButton : null, child: const Text('Add to favorites')
